@@ -1,5 +1,6 @@
 from dataframe import df
-from  pyspark.sql.functions import abs, round, avg, count
+from  pyspark.sql.functions import abs, round, avg, count, year
+import matplotlib
 
 #Add columns
 
@@ -25,3 +26,13 @@ df.agg({'Open': 'avg', 'High': 'max'})
 
 #write to parquet
 df.write.parquet('data/coffee_agg.parquet')
+
+#create year column
+plot_df = df.withColumn('Year', year(df['Date']))
+#create pandas datframe, averageing daily_change by year
+pan_df = plot_df.groupBy(plot_df['Year']).agg(avg(plot_df.Daily_Change)).toPandas()
+#order column by year
+pan_df.sort_values('Year', ascending=True, inplace=True)
+#create line and bar graph potting average daily change over the years
+pan_df.set_index('Year').plot.line()
+pan_df.set_index('Year').plot.bar()
