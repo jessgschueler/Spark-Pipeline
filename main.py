@@ -17,3 +17,5 @@ df.withColumn('Net_Sales', ((df.Open + df.High + df.Low + df.Close)/4)*df.Volume
 df.select(avg('Absolute_Change'))
 #count of rows where volume < 100
 df.select('Volume_Over_100').where(df.Volume_Over_100 == False).count()
+#avg open value and max high
+df.agg({'Open': 'avg', 'High': 'max'}).show()
